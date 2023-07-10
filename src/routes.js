@@ -22,7 +22,7 @@ export default function Router() {
   const { user } = useObjContext();
   const routes = useRoutes([
     {
-      path: '/',
+      path: '/live',
       element: <LiveLayout />,
       children: [{ element: <LiveSection />, index: true }],
     },
@@ -52,7 +52,7 @@ export default function Router() {
               { element: <Navigate to="/index/panel" />, index: true },
               { path: 'panel', element: <AdminPanel /> },
             ]
-        : [{ element: <Navigate to="/" />, index: true }],
+        : [{ element: <Navigate to="/live" />, index: true }],
     },
     {
       path: 'preview/:brandname/:version',
