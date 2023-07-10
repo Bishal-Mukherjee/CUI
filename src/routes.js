@@ -27,7 +27,7 @@ export default function Router() {
       children: [{ element: <LiveSection />, index: true }],
     },
     {
-      path: '/auth',
+      path: 'auth',
       element: <AuthWrapper />,
       children: [
         { element: <Navigate to="/auth/signin" />, index: true },
@@ -36,7 +36,7 @@ export default function Router() {
       ],
     },
     {
-      path: '/index',
+      path: 'index',
       element: <Dashboard />,
       children: user
         ? user.designation === 'Admin'
@@ -55,7 +55,7 @@ export default function Router() {
         : [{ element: <Navigate to="/" />, index: true }],
     },
     {
-      path: '/preview/:brandname/:version',
+      path: 'preview/:brandname/:version',
       element: <PreviewLayout />,
       children: user
         ? [{ element: <PreviewSection />, index: true }]
