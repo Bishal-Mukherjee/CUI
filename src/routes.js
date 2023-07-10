@@ -13,8 +13,8 @@ import { useObjContext } from './context/context';
 import AuthWrapper from './sections/auth/AuthWrapper';
 import SignIn from './sections/auth/SignIn/SignIn';
 import SignUp from './sections/auth/SignUp/SignUp';
-import LiveLayout from './layouts/live/LiveTemplateLayout';
-import LiveSection from './sections/live/Live';
+// import LiveLayout from './layouts/live/LiveTemplateLayout';
+// import LiveSection from './sections/live/Live';
 
 // ----------------------------------------------------------------------
 
@@ -30,11 +30,11 @@ export default function Router() {
         { path: 'signup', element: <SignUp /> },
       ],
     },
-    {
-      path: 'live',
-      element: <LiveLayout />,
-      children: [{ element: <LiveSection />, index: true }],
-    },
+    // {
+    //   path: 'live',
+    //   element: <LiveLayout />,
+    //   children: [{ element: <LiveSection />, index: true }],
+    // },
     {
       path: 'index',
       element: <Dashboard />,
@@ -52,14 +52,14 @@ export default function Router() {
               { element: <Navigate to="/index/panel" />, index: true },
               { path: 'panel', element: <AdminPanel /> },
             ]
-        : [{ element: <Navigate to="/live" />, index: true }],
+        : [{ element: <Navigate to="/" />, index: true }],
     },
     {
       path: 'preview/:brandname/:version',
       element: <PreviewLayout />,
       children: user
         ? [{ element: <PreviewSection />, index: true }]
-        : [{ element: <Navigate to="/auth" />, index: true }],
+        : [{ element: <Navigate to="/" />, index: true }],
     },
     {
       element: <SimpleLayout />,

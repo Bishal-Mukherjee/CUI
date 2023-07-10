@@ -23,16 +23,6 @@ import { auth, storeactions, firestore, storage } from '../../../firebase/fireba
 
 // ----------------------------------------------------------------------
 
-const StyledContent = styled('div')(({ theme }) => ({
-  maxWidth: 480,
-  margin: 'auto',
-  minHeight: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  flexDirection: 'column',
-  backgroundColor: 'white',
-}));
-
 export default function SingnUp({ setAuthNavigation }) {
   const SignUpSchema = yup.object().shape({
     name: yup.string(),
@@ -131,7 +121,7 @@ export default function SingnUp({ setAuthNavigation }) {
   });
 
   return (
-    <StyledContent>
+    <>
       <Stack spacing={3} sx={{ marginTop: 10 }}>
         {message.type ? <AlertMessage message={message} setMessage={setMessage} /> : null}
 
@@ -214,6 +204,6 @@ export default function SingnUp({ setAuthNavigation }) {
           </Typography>
         </Typography>
       </Stack>
-    </StyledContent>
+    </>
   );
 }
