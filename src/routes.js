@@ -22,18 +22,18 @@ export default function Router() {
   const { user } = useObjContext();
   const routes = useRoutes([
     {
-      path: 'live',
-      element: <LiveLayout />,
-      children: [{ element: <LiveSection />, index: true }],
-    },
-    {
-      path: 'auth',
+      path: '/',
       element: <AuthWrapper />,
       children: [
-        { element: <Navigate to="/auth/signin" />, index: true },
+        { element: <Navigate to="/signin" />, index: true },
         { path: 'signin', element: <SignIn /> },
         { path: 'signup', element: <SignUp /> },
       ],
+    },
+    {
+      path: 'live',
+      element: <LiveLayout />,
+      children: [{ element: <LiveSection />, index: true }],
     },
     {
       path: 'index',
