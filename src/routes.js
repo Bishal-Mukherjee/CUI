@@ -11,6 +11,8 @@ import PreviewSection from './sections/preview/Preview';
 
 import { useObjContext } from './context/context';
 import AuthWrapper from './sections/auth/AuthWrapper';
+import SignIn from './sections/auth/SignIn/SignIn';
+import SignUp from './sections/auth/SignUp/SignUp';
 import LiveLayout from './layouts/live/LiveTemplateLayout';
 import LiveSection from './sections/live/Live';
 
@@ -25,8 +27,13 @@ export default function Router() {
       children: [{ element: <LiveSection />, index: true }],
     },
     {
-      path: '/login',
+      path: '/auth',
       element: <AuthWrapper />,
+      children: [
+        { element: <Navigate to="/auth/signin" />, index: true },
+        { path: 'signin', element: <SignIn /> },
+        { path: 'signup', element: <SignUp /> },
+      ],
     },
     {
       path: '/index',
@@ -52,7 +59,7 @@ export default function Router() {
       element: <PreviewLayout />,
       children: user
         ? [{ element: <PreviewSection />, index: true }]
-        : [{ element: <Navigate to="/login" />, index: true }],
+        : [{ element: <Navigate to="/auth" />, index: true }],
     },
     {
       element: <SimpleLayout />,

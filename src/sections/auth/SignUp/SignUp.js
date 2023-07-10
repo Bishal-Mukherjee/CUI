@@ -1,6 +1,16 @@
 import { useState } from 'react';
 // @mui
-import { Stack, IconButton, InputAdornment, TextField, Typography, Box, Checkbox, FormHelperText } from '@mui/material';
+import {
+  Stack,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+  Box,
+  Checkbox,
+  FormHelperText,
+  styled,
+} from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { useFormik } from 'formik';
@@ -12,6 +22,16 @@ import AlertMessage from '../../../custom/AlertMessage';
 import { auth, storeactions, firestore, storage } from '../../../firebase/firebase';
 
 // ----------------------------------------------------------------------
+
+const StyledContent = styled('div')(({ theme }) => ({
+  maxWidth: 480,
+  margin: 'auto',
+  minHeight: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  backgroundColor: 'white',
+}));
 
 export default function SingnUp({ setAuthNavigation }) {
   const SignUpSchema = yup.object().shape({
@@ -111,7 +131,7 @@ export default function SingnUp({ setAuthNavigation }) {
   });
 
   return (
-    <>
+    <StyledContent>
       <Stack spacing={3} sx={{ marginTop: 10 }}>
         {message.type ? <AlertMessage message={message} setMessage={setMessage} /> : null}
 
@@ -194,6 +214,6 @@ export default function SingnUp({ setAuthNavigation }) {
           </Typography>
         </Typography>
       </Stack>
-    </>
+    </StyledContent>
   );
 }

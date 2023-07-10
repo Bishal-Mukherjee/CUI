@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Typography } from '@mui/material';
+import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Typography, styled } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import { useFormik } from 'formik';
@@ -12,6 +12,16 @@ import AlertMessage from '../../../custom/AlertMessage';
 import { auth, storeactions, firestore } from '../../../firebase/firebase';
 
 // ----------------------------------------------------------------------
+
+const StyledContent = styled('div')(({ theme }) => ({
+  maxWidth: 480,
+  margin: 'auto',
+  minHeight: '100vh',
+  display: 'flex',
+  justifyContent: 'center',
+  flexDirection: 'column',
+  backgroundColor: 'white',
+}));
 
 export default function SignIn({ setAuthNavigation }) {
   const navigate = useNavigate();
@@ -71,7 +81,7 @@ export default function SignIn({ setAuthNavigation }) {
   });
 
   return (
-    <>
+    <StyledContent>
       <Stack spacing={3} sx={{ marginTop: 10 }}>
         {message.type ? <AlertMessage message={message} setMessage={setMessage} /> : null}
 
@@ -134,6 +144,6 @@ export default function SignIn({ setAuthNavigation }) {
           </Typography>
         </Typography>
       </Stack>
-    </>
+    </StyledContent>
   );
 }

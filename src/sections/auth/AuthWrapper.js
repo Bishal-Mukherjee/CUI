@@ -7,13 +7,13 @@ import { styled } from '@mui/material/styles';
 import { Container, Typography, Paper } from '@mui/material';
 
 // hooks
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useObjContext } from '../../context/context';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+// import { useObjContext } from '../../context/context';
 import useResponsive from '../../hooks/useResponsive';
 
 // sections
-import SignIn from './SignIn/SignIn';
-import SingnUp from './SignUp/SignUp';
+// import SignIn from './SignIn/SignIn';
+// import SingnUp from './SignUp/SignUp';
 
 import LandingLogo from '../../assets/svg/landinglogo.svg';
 
@@ -55,20 +55,14 @@ export default function AuthWrapper() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { user } = useObjContext();
+  //   const { user } = useObjContext();
 
-  const [authNavigation, setAuthNavigation] = useState(0);
+  //   const [authNavigation, setAuthNavigation] = useState(0);
 
-  const AUTH_SECTION_OBJ = {
-    0: <SignIn setAuthNavigation={setAuthNavigation} />,
-    1: <SingnUp setAuthNavigation={setAuthNavigation} />,
-  };
-
-  //   useEffect(() => {
-  //     if (user) {
-  //       navigate('/index');
-  //     }
-  //   }, [user, location]);
+  //   const AUTH_SECTION_OBJ = {
+  //     0: <SignIn setAuthNavigation={setAuthNavigation} />,
+  //     1: <SingnUp setAuthNavigation={setAuthNavigation} />,
+  //   };
 
   return (
     <>
@@ -111,7 +105,8 @@ export default function AuthWrapper() {
         )}
 
         <Container sx={{ backgroundColor: 'white' }} maxWidth="sm">
-          <StyledContent>{AUTH_SECTION_OBJ[authNavigation]}</StyledContent>
+          <Outlet />
+          {/* <StyledContent>{AUTH_SECTION_OBJ[authNavigation]}</StyledContent> */}
         </Container>
       </StyledRoot>
     </>
