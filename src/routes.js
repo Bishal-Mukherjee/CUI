@@ -22,7 +22,7 @@ export default function Router() {
   const { user } = useObjContext();
   const routes = useRoutes([
     {
-      path: '/live',
+      path: 'live',
       element: <LiveLayout />,
       children: [{ element: <LiveSection />, index: true }],
     },
