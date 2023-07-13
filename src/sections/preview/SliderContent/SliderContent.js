@@ -49,9 +49,9 @@ const TextOnly = ({ textonlycontent }) => {
             <TextCard {...textonlycontent[currentIndex]} index={currentIndex} />
           </Grid>
         ) : null}
-        {textonlycontent[currentIndex + 2] ? (
+        {textonlycontent[currentIndex + 1] ? (
           <Grid item xs={12} md={6}>
-            <TextCard {...textonlycontent[currentIndex + 2]} index={currentIndex} />
+            <TextCard {...textonlycontent[currentIndex + 1]} index={currentIndex} />
           </Grid>
         ) : null}
       </Grid>

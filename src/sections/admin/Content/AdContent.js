@@ -4,15 +4,18 @@ import {
   Paper,
   Typography,
   Box,
-  IconButton,
   Tooltip,
-  Divider,
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Alert,
   CircularProgress,
   FormHelperText,
+  Card,
+  CardContent,
+  CardActions,
+  CardMedia,
+  Button,
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useDropzone } from 'react-dropzone';
@@ -26,35 +29,36 @@ import { StyledButton } from '../../../custom/Button';
 import { useObjContext } from '../../../context/context';
 import { storage } from '../../../firebase/firebase';
 import ContentSvg from '../../../assets/svg/content.svg';
+import { getExistingData } from '../../../services/platform';
 
-const ContentCard = ({ title, description, link, handleRemoveContent }) => (
-  <Box component={Paper} elevation={5}>
-    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <Tooltip title={'Remove'}>
-        <IconButton onClick={() => handleRemoveContent()}>
-          <Icon icon={'carbon:close-outline'} />
-        </IconButton>
-      </Tooltip>
-    </Box>
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: -1 }}>
-      <img src={ContentSvg} alt="product_svg" style={{ width: 100, height: 130 }} />
-    </Box>
-
-    <Divider />
-
-    <Box sx={{ p: 1 }}>
-      <Typography sx={{ fontFamily: 'Wix MadeFor Display' }}>{title}</Typography>
-    </Box>
-
+const ContentCard = ({ title, description, link, image, handleRemoveContent }) => (
+  <Card sx={{ maxWidth: 350 }}>
+    <CardMedia sx={{ height: 180 }} image={image || ContentSvg} title="green iguana" />
     <Tooltip title={link}>
-      <Accordion>
-        <AccordionSummary expandIcon={<Icon icon={'ep:arrow-down-bold'} />}>Description</AccordionSummary>
-        <AccordionDetails>
-          <Typography> {description} </Typography>
-        </AccordionDetails>
-      </Accordion>
+      <CardContent>
+        <Typography gutterBottom variant="h5" component="div">
+          {title}
+        </Typography>
+
+        <Accordion sx={{ mt: 2 }}>
+          <AccordionSummary sx={{ ml: -2 }} expandIcon={<Icon icon={'ep:arrow-down-bold'} />}>
+            Description
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography sx={{ ml: -2 }} noWrap>
+              {description}
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </CardContent>
     </Tooltip>
-  </Box>
+
+    <CardActions>
+      <Button color={'error'} size="small" onClick={() => handleRemoveContent()}>
+        Remove
+      </Button>
+    </CardActions>
+  </Card>
 );
 
 const Content = () => {
@@ -65,7 +69,7 @@ const Content = () => {
     description: yup.string().required('*required'),
   });
 
-  const { saveChangesToCloud } = useObjContext();
+  const { user, editingObj, saveChangesToCloud } = useObjContext();
   const [sectionTitle, setSectionTitle] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
@@ -167,6 +171,19 @@ const Content = () => {
       console.log(err);
     }
   };
+
+  const handleGetExistingData = async () => {
+    try {
+      const existingData = await getExistingData({ user, editingObj, sectionName: 'content' });
+      if (existingData.tiles) setContentTiles(existingData.tiles);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleGetExistingData();
+  }, [user]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -305,7 +322,7 @@ const Content = () => {
         </Grid>
 
         <Grid item xs={12} md={12}>
-          <Grid container spacing={1}>
+          <Grid sx={{ mt: 2 }} container spacing={1}>
             {contentTiles.map((p, index) => (
               <Grid item xs={6} md={4} key={index}>
                 <ContentCard
@@ -313,6 +330,7 @@ const Content = () => {
                   description={p.description}
                   link={p.link}
                   handleRemoveContent={() => handleRemoveContent(p.id)}
+                  image={p.image}
                 />
               </Grid>
             ))}

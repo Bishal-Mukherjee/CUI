@@ -11,6 +11,10 @@ import {
   FormHelperText,
   Alert,
   CircularProgress,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Stack,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { Icon } from '@iconify/react';
@@ -22,6 +26,7 @@ import { storage } from '../../../firebase/firebase';
 import { useObjContext } from '../../../context/context';
 import { StyledTextField } from '../../../custom/TextField';
 import { StyledButton } from '../../../custom/Button';
+import { getExistingData } from '../../../services/platform';
 
 const trimText = (text) => {
   try {
@@ -38,17 +43,18 @@ const trimText = (text) => {
   }
 };
 
-const NavMenuItem = (props) => {
+const NavItem = (props) => {
   const { item, handleRemoveItem } = props;
   return (
     <Box
       sx={{
-        bgcolor: '#84A9FF',
         borderRadius: 1,
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         cursor: 'pointer',
+        borderWidth: 5,
+        borderColor: 'black',
       }}
       component={Paper}
       elevation={8}
@@ -58,6 +64,42 @@ const NavMenuItem = (props) => {
         <Icon icon={'zondicons:close-solid'} color={'black'} />
       </IconButton>
     </Box>
+  );
+};
+
+const NavItemMenu = (props) => {
+  const { item, subItems, handleRemoveItem } = props;
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <Accordion
+      sx={{
+        borderRadius: 1,
+        p: 0.5,
+        cursor: 'pointer',
+      }}
+      component={Paper}
+      elevation={8}
+      expanded={expanded}
+    >
+      <Box sx={{ display: 'flex' }}>
+        <AccordionSummary>
+          <Typography sx={{ color: 'black' }}>{trimText(item)}</Typography>
+        </AccordionSummary>
+
+        <IconButton sx={{ ml: 'auto' }} onClick={() => setExpanded((s) => !s)}>
+          <Icon icon={expanded ? 'mingcute:up-line' : 'mingcute:down-line'} style={{ color: 'black' }} />
+        </IconButton>
+        <IconButton onClick={() => handleRemoveItem()}>
+          <Icon icon={'zondicons:close-solid'} color={'black'} />
+        </IconButton>
+      </Box>
+
+      <AccordionDetails>
+        {subItems.map((subItem, index) => (
+          <Typography key={index}>{subItem.label}</Typography>
+        ))}
+      </AccordionDetails>
+    </Accordion>
   );
 };
 
@@ -84,7 +126,7 @@ const Navbar = () => {
   const [showUploadLoader, setShowUploadLoader] = useState(false);
   const [uploadedFileUrl, setUploadedFileUrl] = useState('');
 
-  const { saveChangesToCloud } = useObjContext();
+  const { user, editingObj, saveChangesToCloud } = useObjContext();
 
   const formik = useFormik({
     validationSchema,
@@ -207,6 +249,21 @@ const Navbar = () => {
     }
   };
 
+  const handleGetExistingData = async () => {
+    try {
+      const existingData = await getExistingData({ user, editingObj, sectionName: 'navbar' });
+      if (existingData.brandlogo) setUploadedFileUrl(existingData.brandlogo);
+      if (existingData.menuitems) setMenuItems(existingData.menuitems);
+      if (existingData.button) setNavButton(existingData.button);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleGetExistingData();
+  }, [user]);
+
   useEffect(() => {
     setTimeout(() => {
       setShowAlert(false);
@@ -244,8 +301,12 @@ const Navbar = () => {
           ) : (
             <>
               {uploadedFileUrl.length > 0 ? (
-                <Box sx={{ display: 'flex' }}>
-                  <Icon icon={'tabler:file-filled'} width={20} /> <Typography>File uploaded!</Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                  <Stack direction={'column'} alignItems={'center'}>
+                    <Icon icon={'tabler:file-filled'} width={25} />
+                    <Typography textAlign={'center'}>File uploaded!</Typography>
+                    <Typography textAlign={'center'}>Upload different file to replace</Typography>
+                  </Stack>
                 </Box>
               ) : (
                 <Box>
@@ -433,13 +494,21 @@ const Navbar = () => {
           </form>
         </Grid>
 
-        <Grid item xs={6} md={6} component={Paper}>
+        <Grid item xs={12} md={12} component={Paper}>
           {Object.keys(menuItems).length > 0 ? (
             <>
               <Grid container spacing={2} sx={{ width: '100%', p: 1.5 }}>
                 {Object.keys(menuItems).map((item, index) => (
-                  <Grid item xs={6} md={6} key={index}>
-                    <NavMenuItem item={item} menuItems={menuItems} handleRemoveItem={() => handleRemoveItem(item)} />
+                  <Grid item xs={6} md={4} key={index}>
+                    {Array.isArray(menuItems[item]) ? (
+                      <NavItemMenu
+                        item={item}
+                        subItems={menuItems[item]}
+                        handleRemoveItem={() => handleRemoveItem(item)}
+                      />
+                    ) : (
+                      <NavItem item={item} menuItems={menuItems} handleRemoveItem={() => handleRemoveItem(item)} />
+                    )}
                   </Grid>
                 ))}
               </Grid>
@@ -450,7 +519,11 @@ const Navbar = () => {
 
       <Box>
         <Box display={'flex'} alignItems={'center'}>
-          <Checkbox sx={{ ml: -0.5 }} checked={hasButton} onClick={() => setHasButton((c) => !c)} />
+          <Checkbox
+            sx={{ ml: -0.5 }}
+            checked={hasButton || Object.values(navButton).length > 0}
+            onClick={() => setHasButton((c) => !c)}
+          />
           <FormHelperText>Will navbar contain button?</FormHelperText>
         </Box>
 
@@ -498,8 +571,11 @@ const Navbar = () => {
       </Box>
 
       {navButton.label ? (
-        <Box sx={{ mt: 2 }}>
+        <Box sx={{ mt: 2, display: 'flex' }}>
           <Button variant="outlined">{navButton.label}</Button>
+          <IconButton sx={{ ml: 1 }} onClick={() => setNavButton({})}>
+            <Icon icon={'ic:round-close'} />
+          </IconButton>
         </Box>
       ) : null}
 

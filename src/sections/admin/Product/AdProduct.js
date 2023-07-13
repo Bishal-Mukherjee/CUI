@@ -24,6 +24,7 @@ import { StyledTextField } from '../../../custom/TextField';
 import { StyledButton } from '../../../custom/Button';
 import { storage } from '../../../firebase/firebase';
 import { useObjContext } from '../../../context/context';
+import { getExistingData } from '../../../services/platform';
 
 const ProductCard = ({ name, description, link, image, handleRemoveProduct }) => (
   <Card sx={{ maxWidth: 345 }}>
@@ -40,7 +41,7 @@ const ProductCard = ({ name, description, link, image, handleRemoveProduct }) =>
     </Tooltip>
 
     <CardActions>
-      <Button size="small" onClick={() => handleRemoveProduct()}>
+      <Button color={'error'} size="small" onClick={() => handleRemoveProduct()}>
         Remove
       </Button>
     </CardActions>
@@ -67,7 +68,7 @@ const Product = () => {
     },
   });
 
-  const { saveChangesToCloud } = useObjContext();
+  const { user, editingObj, saveChangesToCloud } = useObjContext();
   const [showAlert, setShowAlert] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
   const [showUploadLoader, setShowUploadLoader] = useState(false);
@@ -156,6 +157,19 @@ const Product = () => {
       console.log(err);
     }
   };
+
+  const handleGetExistingData = async () => {
+    try {
+      const existingData = await getExistingData({ user, editingObj, sectionName: 'products' });
+      if (existingData.products) setAddedProducts(existingData.products);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleGetExistingData();
+  }, [user]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -293,7 +307,7 @@ const Product = () => {
         <Grid item xs={12} md={12}>
           <Grid container spacing={1} sx={{ mt: 1, mb: 1, justifyContent: 'flex-start' }}>
             {addedProducts.map((p, index) => (
-              <Grid item xs={12} md={4} key={index}>
+              <Grid item xs={12} md={3} key={index}>
                 <ProductCard
                   name={p.name}
                   description={p.description}
@@ -318,8 +332,6 @@ const Product = () => {
           </StyledButton>
         </Tooltip>
       </Box>
-
-      {/* <Typography m={2}>{JSON.stringify({ mainObj })}</Typography> */}
     </Box>
   );
 };

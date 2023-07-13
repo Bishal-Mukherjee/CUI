@@ -25,15 +25,20 @@ const PreviewSection = () => {
           <>
             {mainObj.carousel ? <Carousel carousel={mainObj.carousel} /> : null}
             <Grid container spacing={2} sx={{ mt: 3 }}>
-              <Grid item xs={12} md={6}>
-                {mainObj.products ? <Products addedproducts={mainObj.products} /> : null}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                {mainObj.form ? <Form form={mainObj.form} /> : null}
-              </Grid>
+              {mainObj.products ? (
+                <Grid item xs={12} md={6}>
+                  <Products addedproducts={mainObj.products} />
+                </Grid>
+              ) : null}
+
+              {mainObj.form ? (
+                <Grid item xs={12} md={6}>
+                  <Form form={mainObj.form} />
+                </Grid>
+              ) : null}
             </Grid>
             {mainObj.content ? <Content content={mainObj.content} /> : null}
-            {mainObj['slider-content'] ? <SliderContent slidercontent={mainObj['slider-content']} /> : null}
+            {mainObj.slidercontent ? <SliderContent slidercontent={mainObj.slidercontent} /> : null}
           </>
         ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
@@ -42,6 +47,7 @@ const PreviewSection = () => {
           </Box>
         )}
       </Container>
+
       {mainObj.footer ? <Footer footer={mainObj.footer} navDetails={mainObj.navbar} /> : null}
     </>
   );

@@ -4,27 +4,39 @@ import { Icon } from '@iconify/react';
 
 export const RenderShortQuestion = ({ questionText, index, handleRemoveQuestion }) => (
   <Box display={'flex'} alignItems={'center'}>
-    <Box mt={0.5} sx={{ width: '100%', p: 2, bgcolor: '#DFE3E8', borderRadius: 1 }}>
-      <Typography fontFamily={'Wix MadeFor Display'}>
-        {index + 1}. {questionText}
-      </Typography>
+    <Box
+      mt={0.5}
+      sx={{ width: '100%', p: 1, bgcolor: '#DFE3E8', borderRadius: 1, display: 'flex', alignItems: 'center' }}
+    >
+      <Box>
+        <Typography fontFamily={'Wix MadeFor Display'} noWrap>
+          {index + 1}. {questionText}
+        </Typography>
+      </Box>
+
+      <IconButton onClick={() => handleRemoveQuestion()} sx={{ ml: 'auto' }}>
+        <Icon icon={'zondicons:close-solid'} />
+      </IconButton>
     </Box>
-    <IconButton onClick={() => handleRemoveQuestion()}>
-      <Icon icon={'zondicons:close-solid'} />
-    </IconButton>
   </Box>
 );
 
 export const RenderLongQuestion = ({ questionText, index, handleRemoveQuestion }) => (
   <Box display={'flex'} alignItems={'center'}>
-    <Box mt={0.5} sx={{ width: '100%', p: 2, bgcolor: '#DFE3E8', borderRadius: 1 }}>
-      <Typography fontFamily={'Wix MadeFor Display'}>
-        {index + 1}. {questionText}
-      </Typography>
+    <Box
+      mt={0.5}
+      sx={{ width: '100%', p: 1, bgcolor: '#DFE3E8', borderRadius: 1, display: 'flex', alignItems: 'center' }}
+    >
+      <Box>
+        <Typography fontFamily={'Wix MadeFor Display'} noWrap>
+          {index + 1}. {questionText}
+        </Typography>
+      </Box>
+
+      <IconButton onClick={() => handleRemoveQuestion()} sx={{ ml: 'auto' }}>
+        <Icon icon={'zondicons:close-solid'} />
+      </IconButton>
     </Box>
-    <IconButton onClick={() => handleRemoveQuestion()}>
-      <Icon icon={'zondicons:close-solid'} />
-    </IconButton>
   </Box>
 );
 

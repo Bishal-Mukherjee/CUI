@@ -11,6 +11,7 @@ import {
   Alert,
   Tooltip,
   CircularProgress,
+  Button,
 } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { useFormik } from 'formik';
@@ -21,6 +22,27 @@ import { storage } from '../../../firebase/firebase';
 import { useObjContext } from '../../../context/context';
 import { StyledTextField } from '../../../custom/TextField';
 import { StyledButton } from '../../../custom/Button';
+
+const ImageOnlyTitles = ({ image, link }) => {};
+
+const TextOnlyTiles = ({ content, link }) => (
+  <Paper sx={{ p: 2 }} elevation={10}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+      <Typography sx={{ fontFamily: 'Wix Madefor Display' }}>{content}</Typography>
+      {link ? (
+        <Box sx={{ mt: 1 }}>
+          <Typography component={'a'} href={link} target="_blank">
+            {link}
+          </Typography>
+        </Box>
+      ) : null}
+    </Box>
+    <Button color={'error'} sx={{ mt: 1 }}>
+      {' '}
+      Remove{' '}
+    </Button>
+  </Paper>
+);
 
 const SliderContent = () => {
   const [sliderContentTiles, setSliderContentTiles] = useState([]);
@@ -223,7 +245,13 @@ const SliderContent = () => {
               </form>
             </Grid>
             <Grid item xs={12} md={12}>
-              <Box>{JSON.stringify(sliderContentTiles)}</Box>
+              <Grid container spacing={2}>
+                {sliderContentTiles.map((c, index) => (
+                  <Grid item xs={4} md={4} key={index}>
+                    <TextOnlyTiles {...c} />
+                  </Grid>
+                ))}
+              </Grid>
             </Grid>
           </Grid>
         ) : (

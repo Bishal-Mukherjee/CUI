@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Grid, Paper, Typography, Box, IconButton, Tooltip, Alert, CircularProgress } from '@mui/material';
+import { Grid, Paper, Typography, Box, Tooltip, Alert, CircularProgress, Button, Stack } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useDropzone } from 'react-dropzone';
 import { useFormik } from 'formik';
@@ -10,6 +10,7 @@ import { StyledTextField } from '../../../custom/TextField';
 import { StyledButton } from '../../../custom/Button';
 import { storage } from '../../../firebase/firebase';
 import { useObjContext } from '../../../context/context';
+import { getExistingData } from '../../../services/platform';
 
 const Carousel = () => {
   const [addedFiles, setAddedFiles] = useState([]);
@@ -18,7 +19,7 @@ const Carousel = () => {
   const [showLoader, setShowLoader] = useState(false);
   const [showUploadLoader, setShowUploadLoader] = useState(false);
 
-  const { saveChangesToCloud } = useObjContext();
+  const { user, editingObj, saveChangesToCloud } = useObjContext();
 
   const formik = useFormik({
     initialValues: {
@@ -109,6 +110,19 @@ const Carousel = () => {
     }
   };
 
+  const handleGetExistingData = async () => {
+    try {
+      const existingData = await getExistingData({ user, editingObj, sectionName: 'carousel' });
+      if (existingData.slides) setAddedFiles(existingData.slides);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleGetExistingData();
+  }, [user]);
+
   useEffect(() => {
     setTimeout(() => {
       setShowAlert(false);
@@ -192,34 +206,30 @@ const Carousel = () => {
         </Grid>
 
         <Grid item xs={12} md={12} sx={{ mt: 1 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
+          <Grid container spacing={2}>
             {addedFiles.map((file, index) => (
-              <Box key={index} component={Paper} elevation={1} sx={{ m: 1, borderRadius: 1, minWidth: 350 }}>
-                <Box sx={{ display: 'flex', p: 0.5 }}>
-                  <IconButton onClick={() => handleFileRemove(file)} sx={{ marginLeft: 'auto' }}>
-                    <Icon icon={'zondicons:close-solid'} />
-                  </IconButton>
-                </Box>
-                <Tooltip title={file.link}>
-                  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                    <img alt={index} src={file.image} style={{ width: 200, height: 200 }} />
+              <Grid item xs={6} md={3} key={index}>
+                <Box component={Paper} elevation={5} sx={{ borderRadius: 1, minWidth: 350, height: 320, p: 1 }}>
+                  <Tooltip title={file.link}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                      <Box sx={{ height: 250, width: 350 }}>
+                        <img alt={index} src={file.image} style={{ width: '100%', height: '100%', borderRadius: 5 }} />
+                      </Box>
+                    </Box>
+                  </Tooltip>
+                  <Box sx={{ display: 'flex', mt: 2 }}>
+                    <Button color={'error'} onClick={() => handleFileRemove(file)}>
+                      Remove
+                    </Button>
                   </Box>
-                </Tooltip>
-              </Box>
+                </Box>
+              </Grid>
             ))}
-          </Box>
+          </Grid>
         </Grid>
       </Grid>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
         <Tooltip title={'Save changes to cloud'}>
           <StyledButton sx={{ height: 40 }} variant={'contained'} onClick={() => handleSaveChanges()}>
             {showUploadLoader ? (

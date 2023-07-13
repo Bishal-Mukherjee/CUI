@@ -13,6 +13,8 @@ import {
   Tooltip,
   Divider,
   CircularProgress,
+  Alert,
+  Button,
 } from '@mui/material';
 import { Icon } from '@iconify/react';
 import { useFormik } from 'formik';
@@ -28,6 +30,7 @@ import {
 } from './FormFieldRender';
 import { StyledButton } from '../../../custom/Button';
 import { StyledTextField } from '../../../custom/TextField';
+import { getExistingData } from '../../../services/platform';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -201,10 +204,6 @@ const DropdownQuestion = ({ setFormQuestions }) => {
             variant="outlined"
             placeholder={'Option'}
           />
-
-          <IconButton onClick={() => handleAddOptions()} sx={{ mt: 2, ml: 1.5 }}>
-            <Icon icon={'ei:plus'} width={30} />
-          </IconButton>
         </Box>
 
         {showAlert ? (
@@ -227,6 +226,16 @@ const DropdownQuestion = ({ setFormQuestions }) => {
             </Box>
           ))}
         </Box>
+
+        <Button
+          sx={{ mt: 1 }}
+          variant="contained"
+          onClick={() => handleAddOptions()}
+          disabled={formik.values.option.length === 0}
+        >
+          Add option
+        </Button>
+
         <Box sx={{ mt: 3 }}>
           <StyledButton variant="contained" type="submit">
             Add question
@@ -339,10 +348,6 @@ const CheckboxQuestion = ({ setFormQuestions }) => {
             variant="outlined"
             placeholder={'Option'}
           />
-
-          <IconButton onClick={() => handleAddOptions()} sx={{ mt: 2, ml: 1.5 }}>
-            <Icon icon={'ei:plus'} width={30} />
-          </IconButton>
         </Box>
 
         {showAlert ? (
@@ -366,6 +371,16 @@ const CheckboxQuestion = ({ setFormQuestions }) => {
             </Box>
           ))}
         </Box>
+
+        <Button
+          sx={{ mt: 1 }}
+          variant="contained"
+          onClick={() => handleAddOptions()}
+          disabled={formik.values.option.length === 0}
+        >
+          Add option
+        </Button>
+
         <Box sx={{ mt: 3 }}>
           <StyledButton variant="contained" type="submit">
             Add question
@@ -478,10 +493,6 @@ const MultipleChoice = ({ setFormQuestions }) => {
             variant="outlined"
             placeholder={'Option'}
           />
-
-          <IconButton onClick={() => handleAddOptions()} sx={{ mt: 2, ml: 1.5 }}>
-            <Icon icon={'ei:plus'} width={30} />
-          </IconButton>
         </Box>
 
         {showAlert ? (
@@ -504,7 +515,17 @@ const MultipleChoice = ({ setFormQuestions }) => {
               </Typography>
             </Box>
           ))}
+
+          <Button
+            sx={{ mt: 1 }}
+            variant="contained"
+            onClick={() => handleAddOptions()}
+            disabled={formik.values.option.length === 0}
+          >
+            Add option
+          </Button>
         </Box>
+
         <Box sx={{ mt: 3 }}>
           <StyledButton variant="contained" type="submit">
             Add question
@@ -627,12 +648,13 @@ const ShortAnswer = ({ setFormQuestions }) => {
 const CustomizableForm = () => {
   const [formQuestions, setFormQuestions] = useState([]);
 
-  const { saveChangesToCloud } = useObjContext();
+  const { user, editingObj, saveChangesToCloud } = useObjContext();
   const [showUploadLoader, setShowUploadLoader] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      formTitle: '',
+      formTitle: 'Form',
       questionType: 'short-answer',
       isRequired: false,
     },
@@ -667,18 +689,46 @@ const CustomizableForm = () => {
 
   const handleSaveChanges = () => {
     try {
-      setShowUploadLoader(true);
-      saveChangesToCloud({
-        form: {
-          formTitle: formik.values.formTitle,
-          questions: formQuestions,
-        },
-      });
+      if (formQuestions.length > 0) {
+        saveChangesToCloud({
+          form: {
+            formTitle: formik.values.formTitle,
+            questions: formQuestions,
+          },
+        });
+      } else {
+        setShowAlert(true);
+      }
+
       setShowUploadLoader(false);
     } catch (err) {
       console.log(err);
     }
   };
+
+  const handleGetExistingData = async () => {
+    try {
+      const existingData = await getExistingData({ user, editingObj, sectionName: 'form' });
+      if (existingData.questions) setFormQuestions(existingData.questions);
+      if (existingData.formTitle)
+        formik.setValues({
+          ...formik.values,
+          formTitle: existingData.formTitle,
+        });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    handleGetExistingData();
+  }, [user]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowAlert(false);
+    }, 3000);
+  }, [showAlert]);
 
   return (
     <Box sx={{ padding: 5 }} component={Paper}>
@@ -786,7 +836,13 @@ const CustomizableForm = () => {
         ))}
       </Box>
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      {showAlert ? (
+        <Box sx={{ mt: 2 }}>
+          <Alert severity="error"> Please add some questions </Alert>
+        </Box>
+      ) : null}
+
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
         <Tooltip title={'Save changes to cloud'}>
           <StyledButton sx={{ height: 45 }} variant={'contained'} onClick={() => handleSaveChanges()}>
             {showUploadLoader ? (

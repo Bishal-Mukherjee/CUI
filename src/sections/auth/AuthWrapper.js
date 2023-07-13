@@ -8,7 +8,7 @@ import { Container, Typography, Paper } from '@mui/material';
 
 // hooks
 import { useNavigate, useLocation } from 'react-router-dom';
-// import { useObjContext } from '../../context/context';
+import { useObjContext } from '../../context/context';
 import useResponsive from '../../hooks/useResponsive';
 
 // sections
@@ -55,12 +55,20 @@ export default function AuthWrapper() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const { user } = useObjContext();
+
   const [authNavigation, setAuthNavigation] = useState(0);
 
   const AUTH_SECTION_OBJ = {
     0: <SignIn setAuthNavigation={setAuthNavigation} />,
     1: <SingnUp setAuthNavigation={setAuthNavigation} />,
   };
+
+  //   useEffect(() => {
+  //     if (user) {
+  //       navigate('/index');
+  //     }
+  //   }, [user, location]);
 
   return (
     <>

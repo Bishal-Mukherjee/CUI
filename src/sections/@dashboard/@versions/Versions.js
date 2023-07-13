@@ -312,7 +312,7 @@ const PlatformVersionCard = ({
   };
 
   return (
-    <Card sx={{ width: 300, height: 380 }}>
+    <Card sx={{ width: 350, height: 380 }}>
       <CardHeader
         action={
           <IconButton aria-label="options" onClick={handleClick}>
