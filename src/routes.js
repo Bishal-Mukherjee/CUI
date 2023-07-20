@@ -48,7 +48,7 @@ export default function Router() {
         : [{ element: <Navigate to="/" />, index: true }],
     },
     {
-      path: 'preview/:brandname/:version',
+      path: '/preview/:brandname/:version',
       element: <PreviewLayout />,
       children: user ? [{ element: <PreviewSection />, index: true }] : [{ element: <Navigate to="/" />, index: true }],
     },
