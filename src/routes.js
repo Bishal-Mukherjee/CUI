@@ -50,7 +50,7 @@ export default function Router() {
     {
       path: '/preview/:brandname/:version',
       element: <PreviewLayout />,
-      children: user ? [{ element: <PreviewSection />, index: true }] : [{ element: <Navigate to="/" />, index: true }],
+      children: [{ element: <PreviewSection />, index: true }],
     },
     {
       element: <SimpleLayout />,
