@@ -51,8 +51,8 @@ export default function Router() {
       path: 'preview',
       element: <PreviewLayout />,
       children: [
-        { element: <Navigate to="/preview/:brandname/:version" />, index: true },
-        { path: ':brandname/:version', element: <PreviewSection /> },
+        { element: <Navigate to="/preview/index" />, index: true },
+        { path: 'index', element: <PreviewSection /> },
       ],
     },
     {
