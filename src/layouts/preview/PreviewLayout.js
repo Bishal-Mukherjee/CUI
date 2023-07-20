@@ -28,7 +28,7 @@ const Main = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function PreviewLayout() {
-  const { brandname, version } = useParams();
+  const { brandname = 'WhatsApp', version = 'Release1.0' } = useParams();
   const { user } = useObjContext();
 
   const [mainObj, setMainObj] = useState({});

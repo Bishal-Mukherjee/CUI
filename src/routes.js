@@ -29,6 +29,14 @@ export default function Router() {
       ],
     },
     {
+      path: 'preview',
+      element: <PreviewLayout />,
+      children: [
+        { element: <Navigate to="/preview/index" />, index: true },
+        { path: 'index', element: <PreviewSection /> },
+      ],
+    },
+    {
       path: 'index',
       element: <Dashboard />,
       children: user
@@ -46,14 +54,6 @@ export default function Router() {
               { path: 'panel', element: <AdminPanel /> },
             ]
         : [{ element: <Navigate to="/" />, index: true }],
-    },
-    {
-      path: 'preview',
-      element: <PreviewLayout />,
-      children: [
-        { element: <Navigate to="/preview/index" />, index: true },
-        { path: 'index', element: <PreviewSection /> },
-      ],
     },
     {
       element: <SimpleLayout />,
