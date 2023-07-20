@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
 import { Link, Stack, IconButton, InputAdornment, TextField, Checkbox, Typography } from '@mui/material';
@@ -8,12 +8,14 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 
 import { Icon } from '@iconify/react';
+import { useObjContext } from '../../../context/context';
 import AlertMessage from '../../../custom/AlertMessage';
 import { auth, storeactions, firestore } from '../../../firebase/firebase';
 
 // ----------------------------------------------------------------------
 
 export default function SignIn({ setAuthNavigation }) {
+  const { user } = useObjContext();
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState({
@@ -43,7 +45,7 @@ export default function SignIn({ setAuthNavigation }) {
       setShowLoader(true);
       try {
         const { getAuth, signInWithEmailAndPassword } = auth;
-        const { email, password, platformname } = formik.values;
+        const { email, password } = formik.values;
         const authInstance = getAuth();
         const userCredential = await signInWithEmailAndPassword(authInstance, email, password);
 
@@ -69,6 +71,10 @@ export default function SignIn({ setAuthNavigation }) {
       }
     },
   });
+
+  useEffect(() => {
+    if (user) navigate('/index');
+  }, []);
 
   return (
     <>

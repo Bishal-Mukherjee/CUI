@@ -48,7 +48,7 @@ const Carousel = ({ carousel }) => {
       <AnimatePresence initial={false} custom={direction}>
         {slides ? (
           <Tooltip title={slides[imageIndex].link}>
-            <a href={slides[imageIndex].link}>
+            <a href={slides[imageIndex].link} target="_blank" rel="noreferrer">
               <motion.img
                 key={page}
                 src={slides[imageIndex].image}

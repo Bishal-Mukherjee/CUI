@@ -1,1 +1,1 @@
-export { default } from '../../sections/admin/@panel/AdminWrapper';
+export { default } from '../../sections/@dashboard/admin/@panel/AdminWrapper';

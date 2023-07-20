@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
 // @mui
 import { Container, Box, Typography, FormHelperText, Grid } from '@mui/material';
@@ -24,10 +24,11 @@ const PreviewSection = () => {
         {Object.keys(mainObj).length ? (
           <>
             {mainObj.carousel ? <Carousel carousel={mainObj.carousel} /> : null}
+            {mainObj.products ? <Products addedproducts={mainObj.products} /> : null}
             <Grid container spacing={2} sx={{ mt: 3 }}>
-              {mainObj.products ? (
+              {mainObj.slidercontent ? (
                 <Grid item xs={12} md={6}>
-                  <Products addedproducts={mainObj.products} />
+                  <SliderContent slidercontent={mainObj.slidercontent} />
                 </Grid>
               ) : null}
 
@@ -38,7 +39,6 @@ const PreviewSection = () => {
               ) : null}
             </Grid>
             {mainObj.content ? <Content content={mainObj.content} /> : null}
-            {mainObj.slidercontent ? <SliderContent slidercontent={mainObj.slidercontent} /> : null}
           </>
         ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
@@ -48,7 +48,7 @@ const PreviewSection = () => {
         )}
       </Container>
 
-      {mainObj.footer ? <Footer footer={mainObj.footer} navDetails={mainObj.navbar} /> : null}
+      {mainObj.footer ? <Footer footer={mainObj.footer} theme={mainObj.theme} navDetails={mainObj.navbar} /> : null}
     </>
   );
 };

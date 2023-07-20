@@ -35,11 +35,8 @@ const ProductCard = ({ name, image, description, link }) => (
       </Typography>
     </CardContent>
     <CardActions>
-      <Link href={link}>
+      <Link href={link} target="_blank">
         <Button size="small">View</Button>
-      </Link>
-      <Link>
-        <Button size="small">Learn More</Button>
       </Link>
     </CardActions>
   </Card>
@@ -49,18 +46,12 @@ const Products = ({ addedproducts }) => {
   const { products } = addedproducts;
 
   return (
-    <Container maxWidth sx={{ mt: 10 }}>
-      <Typography
-        sx={{ fontFamily: 'Wix Madefor Display', fontWeight: 900, fontSize: 40, color: '#03045e', textAlign: 'center' }}
-      >
-        Products
-      </Typography>
-
-      <Grid sx={{ mt: 1 }} container spacing={2}>
+    <Container maxWidth sx={{ mt: 5 }}>
+      <Grid sx={{ mt: 1, justifyContent: 'center' }} container spacing={2}>
         {products ? (
           <>
             {products.map((product, index) => (
-              <Grid item xs={12} md={6} key={index}>
+              <Grid item xs={12} md={3} key={index}>
                 <Box>
                   <ProductCard {...product} />
                 </Box>

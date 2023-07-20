@@ -69,9 +69,16 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 
 const Transition = React.forwardRef((props, ref) => <Slide direction="up" ref={ref} {...props} />);
 
-const CustomDialog = ({ open, setPurpose, purpose, selectedBrand }) => {
-  const { user } = useObjContext();
-
+const CustomDialog = ({
+  open,
+  setPurpose,
+  purpose,
+  handleAddVersion,
+  handleAddBrand,
+  message,
+  setMessage,
+  showLoader,
+}) => {
   const generateValidationSchema = () => {
     if (purpose === 'brand') {
       return yup.object({
@@ -83,12 +90,6 @@ const CustomDialog = ({ open, setPurpose, purpose, selectedBrand }) => {
       versionname: yup.string().required('Please enter version name'),
     });
   };
-
-  const [showLoader, setShowLoader] = useState(false);
-  const [message, setMessage] = useState({
-    type: '',
-    text: '',
-  });
 
   const formik = useFormik({
     validationSchema: generateValidationSchema(),
@@ -109,101 +110,6 @@ const CustomDialog = ({ open, setPurpose, purpose, selectedBrand }) => {
       }
     },
   });
-
-  const handleAddBrand = async (brandname, versionname) => {
-    try {
-      setShowLoader(true);
-
-      const { doc, setDoc, getDoc, collection } = storeactions;
-      const { platformname } = user;
-
-      const docRef = doc(collection(firestore, 'platforms'), platformname);
-      const existingDoc = await getDoc(docRef);
-
-      const objCreation = {
-        ...existingDoc.data(),
-        [brandname]: {
-          activeversion: '',
-          versions: [{ name: versionname, createdBy: user.email, createdAt: new Date().toISOString() }],
-
-          [versionname]: {
-            template: {},
-            createdBy: user.email,
-            createdAt: new Date().toISOString(),
-          },
-
-          createdBy: user.email,
-          createdAt: new Date().toISOString(),
-        },
-      };
-
-      await setDoc(docRef, objCreation);
-
-      setShowLoader(false);
-      setMessage({
-        type: 'success',
-        text: 'Brand added successfully',
-      });
-    } catch (err) {
-      console.log(err);
-      setMessage({
-        type: 'error',
-        text: 'Failed to add brand',
-      });
-    }
-  };
-
-  const handleAddVersion = async (versionname) => {
-    try {
-      // for adding a version platform name, barnd name must exists
-      setShowLoader(true);
-      const { doc, getDoc, setDoc, collection } = storeactions;
-      const platformname = localStorage.getItem('platformname');
-
-      const docRef = doc(collection(firestore, 'platforms'), platformname);
-      const existingDoc = await getDoc(docRef);
-
-      if (existingDoc.exists()) {
-        const documentData = existingDoc.data();
-        const addedversions = documentData[selectedBrand].versions;
-        addedversions.push({
-          name: versionname,
-          createdBy: user.email,
-          createdAt: new Date().toISOString(),
-        });
-
-        const updatedDoc = {
-          ...documentData,
-
-          [selectedBrand]: {
-            ...documentData[selectedBrand],
-
-            versions: addedversions,
-
-            [versionname]: {
-              template: {},
-              createdBy: user.email,
-              createdAt: new Date().toISOString(),
-            },
-          },
-        };
-
-        await setDoc(docRef, updatedDoc);
-      }
-
-      setShowLoader(false);
-      setMessage({
-        type: 'success',
-        text: 'Version added successfully',
-      });
-    } catch (err) {
-      console.log(err);
-      setMessage({
-        type: 'error',
-        text: 'Failed to add version',
-      });
-    }
-  };
 
   return (
     <>
@@ -305,14 +211,14 @@ const PlatformVersionCard = ({
 
   const handlePreview = () => {
     try {
-      navigate(`/preview/${selectedBrand}/${name}`);
+      window.open(`/preview/${selectedBrand}/${name}`, '_blank');
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <Card sx={{ width: 350, height: 380 }}>
+    <Card sx={{ height: 380 }}>
       <CardHeader
         action={
           <IconButton aria-label="options" onClick={handleClick}>
@@ -377,6 +283,8 @@ const Versions = () => {
   const [showLoader, setShowLoader] = useState(false);
   const [existingBrands, setExistingBrands] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState('');
+  const [message, setMessage] = useState({});
+  const [loadingButtonLoader, setLoadingButton] = useState(false);
 
   const handleGetExistingBrands = async () => {
     try {
@@ -522,9 +430,123 @@ const Versions = () => {
 
   const handleDialog = (temppurpose) => {
     try {
+      setMessage('');
       setPurpose(temppurpose);
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleAddBrand = async (brandname, versionname) => {
+    try {
+      setLoadingButton(true);
+
+      const { doc, setDoc, getDoc, collection } = storeactions;
+      const { platformname } = user;
+
+      const docRef = doc(collection(firestore, 'platforms'), platformname);
+      const existingDoc = await getDoc(docRef);
+
+      const objCreation = {
+        ...existingDoc.data(),
+        [brandname]: {
+          activeversion: '',
+          versions: [{ name: versionname, createdBy: user.email, createdAt: new Date().toISOString() }],
+
+          [versionname]: {
+            template: {},
+            createdBy: user.email,
+            createdAt: new Date().toISOString(),
+          },
+
+          createdBy: user.email,
+          createdAt: new Date().toISOString(),
+        },
+      };
+
+      await setDoc(docRef, objCreation);
+
+      setLoadingButton(false);
+      setMessage({
+        type: 'success',
+        text: 'Brand added successfully',
+      });
+      setTimeout(() => {
+        setPurpose('');
+      }, 2000);
+      handleGetExistingBrands();
+    } catch (err) {
+      console.log(err);
+      setMessage({
+        type: 'error',
+        text: 'Failed to add brand',
+      });
+      setLoadingButton(false);
+    }
+  };
+
+  const handleAddVersion = async (versionname) => {
+    try {
+      // for adding a version platform name, barnd name must exists
+      setLoadingButton(true);
+      const { doc, getDoc, setDoc, collection } = storeactions;
+      const platformname = localStorage.getItem('platformname');
+
+      const docRef = doc(collection(firestore, 'platforms'), platformname);
+      const existingDoc = await getDoc(docRef);
+
+      if (existingDoc.exists()) {
+        const documentData = existingDoc.data();
+        const addedversions = documentData[selectedBrand].versions;
+        addedversions.push({
+          name: versionname,
+          createdBy: user.email,
+          createdAt: new Date().toISOString(),
+        });
+
+        const updatedDoc = {
+          ...documentData,
+
+          [selectedBrand]: {
+            ...documentData[selectedBrand],
+
+            versions: addedversions,
+
+            [versionname]: {
+              template: {},
+              createdBy: user.email,
+              createdAt: new Date().toISOString(),
+            },
+          },
+        };
+
+        await setDoc(docRef, updatedDoc);
+      }
+
+      setLoadingButton(false);
+      setMessage({
+        type: 'success',
+        text: 'Version added successfully',
+      });
+      setTimeout(() => {
+        setPurpose('');
+      }, 2000);
+      setVersions((prevstate) => [
+        ...prevstate,
+        {
+          name: versionname,
+          template: {},
+          createdBy: user.email,
+          createdAt: new Date().toISOString(),
+        },
+      ]);
+    } catch (err) {
+      console.log(err);
+      setMessage({
+        type: 'error',
+        text: 'Failed to add version',
+      });
+      setLoadingButton(false);
     }
   };
 
@@ -569,7 +591,7 @@ const Versions = () => {
         </Box>
       ) : null}
 
-      <Grid container mt={3}>
+      <Grid container spacing={3} mt={3}>
         {versions.length > 0 ? (
           <>
             {versions.map((v, index) => (
@@ -579,6 +601,7 @@ const Versions = () => {
                   isActive={liveVersion === v.name}
                   handleSetVersionActive={() => handleSetVersionActive(v.name)}
                   handleDeleteVersion={() => handleDeleteVersion(v.name)}
+                  handleAddBrand={handleAddBrand}
                   selectedBrand={selectedBrand}
                 />
               </Grid>
@@ -615,7 +638,17 @@ const Versions = () => {
       </Grid>
 
       {purpose ? (
-        <CustomDialog open={Boolean(purpose)} setPurpose={setPurpose} purpose={purpose} selectedBrand={selectedBrand} />
+        <CustomDialog
+          open={Boolean(purpose)}
+          setPurpose={setPurpose}
+          purpose={purpose}
+          selectedBrand={selectedBrand}
+          handleAddBrand={handleAddBrand}
+          handleAddVersion={handleAddVersion}
+          message={message}
+          setMessage={setMessage}
+          showLoader={loadingButtonLoader}
+        />
       ) : null}
     </Container>
   );

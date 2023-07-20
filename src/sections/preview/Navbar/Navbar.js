@@ -20,7 +20,7 @@ const StyledHeader = styled('header')(({ theme }) => ({
   lineHeight: 0,
   width: '100%',
   position: 'absolute',
-  backgroundColor: '#C4CDD5',
+  //   backgroundColor: '#C4CDD5',
   height: 80,
 
   //   padding: theme.spacing(5, 5, 0),
@@ -83,7 +83,7 @@ export default function Navbar({ mainObj }) {
       {mainObj ? (
         <>
           {mainObj.navbar ? (
-            <StyledHeader>
+            <StyledHeader sx={{ backgroundColor: mainObj.theme || '#C4CDD5' }}>
               <Grid container sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
                 <Grid item xs={6} md={6} sx={{ display: 'flex', alignItems: 'center', pl: 5 }}>
                   {mainObj.navbar.brandlogo ? (
