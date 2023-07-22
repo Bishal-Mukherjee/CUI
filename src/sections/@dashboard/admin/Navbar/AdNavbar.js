@@ -432,8 +432,7 @@ const Navbar = () => {
                           fontFamily: 'Wix MadeFor Display',
                         },
                       }}
-                      error={formik.touched.menuItemLink && Boolean(formik.errors.menuItemLink)}
-                      helperText={formik.errors.menuItemLink && formik.errors.menuItemLink}
+                      required={!isMultipleLinks}
                     />
                   </>
                 )}

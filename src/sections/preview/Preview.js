@@ -11,6 +11,7 @@ import Form from './Form/Form';
 import Content from './Content/Content';
 import SliderContent from './SliderContent/SliderContent';
 import Footer from './Footer/Footer';
+import Article from './Article/Article';
 
 const PreviewSection = () => {
   const [mainObj, version] = useOutletContext();
@@ -26,9 +27,9 @@ const PreviewSection = () => {
             {mainObj.carousel ? <Carousel carousel={mainObj.carousel} /> : null}
             {mainObj.products ? <Products addedproducts={mainObj.products} /> : null}
             <Grid container spacing={2} sx={{ mt: 3 }}>
-              {mainObj.slidercontent ? (
+              {mainObj.article ? (
                 <Grid item xs={12} md={6}>
-                  <SliderContent slidercontent={mainObj.slidercontent} />
+                  <Article article={mainObj.article} />
                 </Grid>
               ) : null}
 
@@ -39,6 +40,7 @@ const PreviewSection = () => {
               ) : null}
             </Grid>
             {mainObj.content ? <Content content={mainObj.content} /> : null}
+            {mainObj.slidercontent ? <SliderContent slidercontent={mainObj.slidercontent} /> : null}
           </>
         ) : (
           <Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>

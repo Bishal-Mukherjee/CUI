@@ -27,7 +27,7 @@ export const RenderShortQuestion = ({ name, value, questionText, handleInputChan
       <Box sx={{ mt: 2 }}>
         <TextField
           variant="standard"
-          name={name}
+          name={questionText}
           value={value}
           onChange={(e) => handleInputChange(e, null, null)}
           sx={{ width: '100%' }}
@@ -49,7 +49,7 @@ export const RenderLongQuestion = ({ name, value, questionText, handleInputChang
         <TextField
           multiline
           rows={4}
-          name={name}
+          name={questionText}
           value={value}
           onChange={(e) => handleInputChange(e, null, null)}
           sx={{ width: '100%' }}
@@ -63,14 +63,14 @@ export const RenderCheckboxQuestion = ({ name, value, questionText, options, han
   <Box display={'flex'} flexDirection={'column'} alignItems={'flex-start'} component={Paper} sx={{ p: 1.5 }}>
     <Box>
       <Typography variant="h5" fontFamily={'Wix MadeFor Display'}>
-        {questionText} uu
+        {questionText}
       </Typography>
     </Box>
     <Grid container spacing={2} sx={{ mt: 2 }}>
       {options.map((op, index) => (
         <Grid item xs={12} md={6} key={index}>
           <Box width={'100%'} display={'flex'} alignItems={'center'}>
-            <Checkbox name={name} value={value} onClick={() => handleInputChange(null, op, name)} />{' '}
+            <Checkbox name={questionText} value={value} onClick={() => handleInputChange(null, op, questionText)} />{' '}
             <Typography>{op}</Typography>
           </Box>
         </Grid>
@@ -92,7 +92,7 @@ export const RenderDateQuestion = ({ name, value, questionText, handleInputChang
         <DatePicker
           format="DD/MM/YYYY"
           value={value}
-          onChange={(v) => handleInputChange(null, dayjs(v).format('DD/MM/YYYY'), name)}
+          onChange={(v) => handleInputChange(null, dayjs(v).format('DD/MM/YYYY'), questionText)}
         />
       </Box>
     </Box>
@@ -112,9 +112,9 @@ export const RenderMultipleChoiceQuestion = ({ name, questionText, options, hand
           {options.map((op, index) => (
             <FormControlLabel
               key={index}
-              name={name}
+              name={questionText}
               value={op}
-              control={<Radio onClick={() => handleInputChange(null, op, name)} />}
+              control={<Radio onClick={() => handleInputChange(null, op, questionText)} />}
               label={op}
             />
           ))}
@@ -133,7 +133,12 @@ export const RenderDropdownQuestion = ({ name, value, questionText, options, han
         </Typography>
       </Box>
       <Box sx={{ mt: 2, width: '60%' }}>
-        <Select name={name} value={value} onChange={(e) => handleInputChange(e, null, null)} sx={{ width: '100%' }}>
+        <Select
+          name={questionText}
+          value={value}
+          onChange={(e) => handleInputChange(e, null, null)}
+          sx={{ width: '100%' }}
+        >
           {options.map((op, index) => (
             <MenuItem value={op} key={index}>
               {op}

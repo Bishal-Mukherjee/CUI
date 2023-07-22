@@ -59,14 +59,14 @@ const ImageOnly = ({ imageonlycontent }) => {
         </IconButton>
       </Box>
 
-      <Grid container spacing={2} direction={'column'} sx={{ justifyContent: 'center', mt: 1 }}>
+      <Grid container spacing={2} direction={'row'} sx={{ justifyContent: 'center', mt: 1 }}>
         {imageonlycontent[currentIndex] ? (
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <ImageCard {...imageonlycontent[currentIndex]} index={currentIndex} />
           </Grid>
         ) : null}
         {imageonlycontent[currentIndex + 1] ? (
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <ImageCard {...imageonlycontent[currentIndex + 1]} index={currentIndex} />
           </Grid>
         ) : null}
@@ -132,14 +132,14 @@ const TextOnly = ({ textonlycontent }) => {
         </IconButton>
       </Box>
 
-      <Grid container spacing={2} direction={'column'} sx={{ justifyContent: 'center', mt: 1 }}>
+      <Grid container spacing={2} direction={'row'} sx={{ justifyContent: 'center', mt: 1 }}>
         {textonlycontent[currentIndex] ? (
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <TextCard {...textonlycontent[currentIndex]} index={currentIndex} />
           </Grid>
         ) : null}
         {textonlycontent[currentIndex + 2] ? (
-          <Grid item xs={12} md={5}>
+          <Grid item xs={12} md={6}>
             <TextCard {...textonlycontent[currentIndex + 2]} index={currentIndex} />
           </Grid>
         ) : null}

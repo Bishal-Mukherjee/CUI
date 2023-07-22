@@ -47,11 +47,11 @@ const Carousel = ({ carousel }) => {
     <Paper>
       <AnimatePresence initial={false} custom={direction}>
         {slides ? (
-          <Tooltip title={slides[imageIndex].link}>
-            <a href={slides[imageIndex].link} target="_blank" rel="noreferrer">
+          <Tooltip title={slides[imageIndex]?.link}>
+            <a href={slides[imageIndex]?.link} target="_blank" rel="noreferrer">
               <motion.img
                 key={page}
-                src={slides[imageIndex].image}
+                src={slides[imageIndex]?.image}
                 custom={direction}
                 variants={variants}
                 initial="enter"
@@ -62,7 +62,7 @@ const Carousel = ({ carousel }) => {
                 }}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={1}
-                style={{ marginTop: 30, height: 700, width: '100%', borderRadius: 5 }}
+                style={{ marginTop: 30, height: 430, width: '100%', borderRadius: 5 }}
               />
             </a>
           </Tooltip>

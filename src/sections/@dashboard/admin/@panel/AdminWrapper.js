@@ -15,6 +15,7 @@ import Versions from '../../@versions/Versions';
 import Navbar from '../Navbar/AdNavbar';
 import Carousel from '../Carousel/AdCarousel';
 import Product from '../Product/AdProduct';
+import Article from '../Article/AdArticle';
 import CustomizableForm from '../Form/CustomizableForm';
 import Content from '../Content/AdContent';
 import SliderContent from '../SliderContent/AdSliderContent';
@@ -59,6 +60,7 @@ export default function AdminPanel() {
     { name: 'Navbar', slug: 'navbar' },
     { name: 'Carousel', slug: 'carousel' },
     { name: 'Product', slug: 'product' },
+    { name: 'Article', slug: 'article' },
     { name: 'Form', slug: 'form' },
     { name: 'Content', slug: 'content' },
     { name: 'Slider Content', slug: 'slider-content' },
@@ -69,6 +71,7 @@ export default function AdminPanel() {
     navbar: <Navbar />,
     carousel: <Carousel />,
     product: <Product />,
+    article: <Article />,
     form: <CustomizableForm />,
     content: <Content />,
     'slider-content': <SliderContent />,
