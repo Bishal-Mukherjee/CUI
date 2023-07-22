@@ -29,7 +29,7 @@ export default function Router() {
       ],
     },
     {
-      path: 'index',
+      path: '/index',
       element: <Dashboard />,
       children: user
         ? user.designation === 'Admin'
@@ -48,7 +48,7 @@ export default function Router() {
         : [{ element: <Navigate to="/" />, index: true }],
     },
     {
-      path: 'preview',
+      path: '/preview',
       element: <PreviewLayout />,
       children: [
         { element: <Navigate to="/preview/:brandname/:version" />, index: true },
